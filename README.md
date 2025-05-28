@@ -1,4 +1,4 @@
-# Coinspiracy - A Coin Weighing Puzzle Game
+# Coin-spiracy - A Coin Weighing Puzzle Game
 
 Coinspiracy is an interactive web-based implementation of the classic coin weighing puzzle. In this puzzle game, you need to identify the single "weighted" coin among a set of identical-looking coins using a balance scale.
 
