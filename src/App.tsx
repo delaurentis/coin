@@ -58,6 +58,9 @@ function App() {
       const savedHistory = savedHistoryJson ? JSON.parse(savedHistoryJson) : [];
       console.log('Parsed history:', savedHistory);
 
+      // Lookup the last game mode
+      const savedGameMode = localStorage.getItem('coinGameMode') as GameMode;
+
       // If we have a saved history, restore the game state
       if (savedHistory.length > 0) {
         try {
@@ -74,9 +77,6 @@ function App() {
           if (lastWeigh.remainingCandidates) {
             setPossibleWeightedCoins(lastWeigh.remainingCandidates);
             
-            // Lookup the last game mode
-            const savedGameMode = localStorage.getItem('coinGameMode') as GameMode;
-
             // If we're down to one coin in worst mode, set it as the weighted coin
             if (savedGameMode === 'worst' && lastWeigh.remainingCandidates.length === 1) {
               setWeightedCoinIndex(lastWeigh.remainingCandidates[0]);
@@ -98,14 +98,14 @@ function App() {
           setMessage("Game restored from previous session. Left side selected.");
         } catch (error) {
           console.error("Error restoring game state:", error);
-          resetGame();
+          resetGame(savedGameMode);
         }
       } else {
-        resetGame();
+        resetGame(savedGameMode);
       }
     } catch (error) {
       console.error("Error loading weigh history from localStorage:", error);
-      resetGame();
+      resetGame(gameMode);
     }
   }, []);
   
@@ -141,7 +141,7 @@ function App() {
     localStorage.setItem('coinGameMode', mode);
     // Update state
     setGameMode(mode);
-    resetGame();
+    resetGame(mode);
   };
 
   const handleCoinClick = (index: number) => {
@@ -195,12 +195,38 @@ function App() {
     // Don't reset scaleTipped immediately to allow for proper animation
     // It will be updated based on the weighing result
     
+    console.log('[handleWeight] Weighted coin index:', weightedCoinIndex);
+
     // Increment turn counter
     setTurns(turns + 1);
     
     let result: 'left' | 'right' | 'equal';
     
     if (gameMode === 'random') {
+      // Ensure we have a weighted coin in random mode                                               
+      /*if (weightedCoinIndex === null) {                                                              
+        console.warn("No weighted coin detected in random mode. Selecting a new one...");            
+        
+        // First check if we have remaining candidates from history
+        let candidates: number[] = [];
+        if (weighHistory.length > 0) {
+          const lastWeigh = weighHistory[weighHistory.length - 1];
+          if (lastWeigh.remainingCandidates && lastWeigh.remainingCandidates.length > 0) {
+            candidates = lastWeigh.remainingCandidates;
+          }
+        }
+        
+        // If no candidates from history, use all coins
+        if (candidates.length === 0) {
+          candidates = Array.from({ length: coins.length }, (_, i) => i);
+        }
+        
+        // Pick a random coin from candidates
+        const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
+        setWeightedCoinIndex(randomIndex);                                                           
+        console.log("New weighted coin is:", randomIndex + 1);                                       
+      }*/                                                                                         
+
       // Random mode - use the pre-selected weighted coin
       // Calculate weight of each side
       const leftWeight = leftCoins.includes(weightedCoinIndex!) ? 
@@ -308,7 +334,7 @@ function App() {
     }
   };
 
-  const resetGame = () => {
+  const resetGame = (newMode: GameMode) => {
     console.log('Resetting game');
 
     setLeftCoins([]);
@@ -328,7 +354,7 @@ function App() {
     // Always select left side on reset
     setSelectedSide('left');
     
-    if (gameMode === 'random') {
+    if (newMode === 'random') {
       // In random mode, pick a weighted coin right away
       const randomIndex = Math.floor(Math.random() * 12);
       setWeightedCoinIndex(randomIndex);
@@ -409,7 +435,7 @@ function App() {
           gameMode={gameMode}
           setGameMode={handleGameModeChange}
           turns={turns}
-          resetGame={resetGame}
+          resetGame={() => resetGame(gameMode)}
         />
         
         <CoinContainer 
