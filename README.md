@@ -1,10 +1,10 @@
-# Coinspiracy - A Coin Weighing Puzzle Game
+# Coin-spiracy - A Coin Weighing Puzzle Game
 
-Coinspiracy is an interactive web-based implementation of the classic coin weighing puzzle. In this puzzle game, you need to identify the single "weighted" coin among a set of identical-looking coins using a balance scale.
+Coinspiracy is an interactive web-based implementation of the classic coin weighing puzzle. In this puzzle game, you need to identify the single "weighted" coin among a set of identical-looking coins using a balance scale.  This version features a special mode for adverserial play that always presents the worst case scenario to the player.  Thus the name, coin-spiracy.
 
 ## Demo
 
-Visit https://coinspiracy.retrorabbit.games/ for a live demo.
+Visit https://coin.retrorabbit.games/ for a live demo.
 
 ## Game Concept
 
@@ -50,10 +50,9 @@ Coinspiracy is built with:
 - CSS Modules for component-specific styling
 - Local Storage API for game state persistence
 
-The game implements complex algorithms to:
+The game implements algorithms to:
 - Track potential weighted coins based on weighing history
 - Implement the worst-case strategy for maximum challenge
-- Provide visual feedback through animations and color coding
 
 ## Installation and Running
 
@@ -79,4 +78,4 @@ This generates optimized files in the `build` folder that can be deployed to any
 
 ## Credits
 
-Coinspiracy was written by Pete DeLaurentis, based on the classic coin weighing puzzle and ideas from math camp director Dr. Susan Durst.
+Coin-spiracy was written by Pete DeLaurentis, based on the classic coin weighing puzzle and ideas from math camp director Dr. Susan Durst.
