@@ -1,0 +1,97 @@
+.logContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 10px auto;
+  margin-top: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 3px solid #333;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: 'Press Start 2P', monospace, Arial;
+  color: white;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.logTitle {
+  font-size: 14px;
+  color: #ffcc33;
+  margin: 0 0 10px 0;
+  text-align: center;
+  padding-top: 2px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #444;
+}
+
+.logContent {
+  font-size: 10px;
+}
+
+.logEntry {
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px dotted #444;
+}
+
+.weighInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.turnNumber {
+  font-weight: bold;
+  color: #ffcc33;
+}
+
+.leftSide {
+  color: #77ccff;
+}
+
+.rightSide {
+  color: #ff77cc;
+}
+
+.result {
+  font-weight: bold;
+}
+
+.left {
+  color: #77ccff;
+}
+
+.right {
+  color: #ff77cc;
+}
+
+.equal {
+  color: #77ff77;
+}
+
+.candidates {
+  font-style: italic;
+  color: #aaaaaa;
+  margin-top: 5px;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .logContainer {
+    max-width: 95%;
+    max-height: 200px;
+  }
+  
+  .weighInfo {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .logTitle {
+    font-size: 12px;
+  }
+  
+  .logContent {
+    font-size: 8px;
+  }
+}

@@ -1,0 +1,52 @@
+.container {
+  padding: 12px 10px;
+  padding-bottom: 8px;
+  border-radius: 8px;
+  border: 4px solid rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  gap: 2px;
+  margin-bottom: 12px;
+  position: relative;
+  transform: scale(0.8);
+  margin: 0 auto;
+  z-index: 50; /* Higher z-index to ensure it's above the balance */
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 80px;
+  margin: 8px;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 16px;
+  color: #ffcc33;
+  text-shadow: 2px 2px 0 #996600;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 51; /* Even higher z-index to ensure it's always clickable */
+}
+
+.clearButton:hover {
+  color: #ffdd44;
+  transform: scale(1.05);
+}
+
+.clearButton:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .container {
+    transform: scale(0.7);
+    margin-top: -20px;
+    margin-bottom: -20px;
+    margin-left: -20px;
+  }
+}

@@ -1,0 +1,99 @@
+.balanceSide {
+  width: 350px;
+}
+
+.plate {
+  width: 200px;
+  height: 15px;
+  border-radius: 50% 50% 10px 10px / 20px 20px 5px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  overflow: visible;
+  /* Create plate shape with pseudo-elements */
+}
+
+/* Selection arrow */
+.selectionArrow {
+  position: absolute;
+  /* top is dynamically calculated in component */
+  left: 162px; /* Center over the pyramid */
+  transform: translateX(-50%);
+  font-size: 40px;
+  color: white;
+  font-weight: bold;
+  z-index: 60;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+.plate.rightPlate .selectionArrow {
+  left: 192px;
+}
+
+
+.selected {
+  /* Style for selected plate - could add subtle highlight if desired */
+}
+
+.emptyPlate {
+  width: 100%;
+  height: 100%;
+}
+
+/* Plate selection area - covers just the plate part */
+.plateSelectArea {
+  position: relative;
+  top: -8px;
+  left: 0;
+  width: 350px;
+  height: 82px; /* Height of the clickable area */
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 1000; /* Above plate but below coins */
+}
+
+/* Pyramid Styles */
+.leftPyramid, .rightPyramid {
+  position: absolute;
+  display: flex;
+  flex-direction: column; /* Stack from top down */
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  z-index: 50; /* Much higher z-index to ensure coins are on top */
+}
+
+.leftPyramid {
+  left: 50px;
+  bottom: 25px; /* Position directly on top of the plate */
+}
+
+.rightPyramid {
+  left: 80px;
+  bottom: 25px; /* Position directly on top of the plate */
+}
+
+.pyramidRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -2px; /* Overlap the coins vertically */
+  position: relative;
+  z-index: 10;
+}
+
+.pyramidCoin {
+  width: 68px;
+  height: 68px;
+  margin: 0 -20px; /* Overlap horizontally */
+  transform-origin: bottom center;
+  position: relative;
+  z-index: 5;
+}
+
+.pyramidCoin:nth-child(odd) {
+  z-index: 6; /* Ensure coins interleave properly */
+}

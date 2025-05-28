@@ -1,0 +1,35 @@
+.App {
+  text-align: center;
+  background: black;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20px;
+  color: white;
+  font-family: 'Press Start 2P', monospace, Arial;
+  position: relative;
+}
+
+.keyboardHints {
+  font-size: 10px;
+  color: #555;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding-top: 0;
+    gap: 0;
+  }
+  
+  .keyboardHints {
+    font-size: 8px;
+    display: none;
+  }
+}

@@ -1,0 +1,153 @@
+.gameHeader {
+  width: 100%;
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 30px;
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.gameTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+.controlsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.modeSwitchContainer {
+  display: flex;
+  flex-direction: row;
+  z-index: 2;
+}
+
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.modeSwitch {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-top: -3px;
+  border-radius: 0px;
+  gap: 15px;
+}
+
+.modeOption {
+  padding: 3px 0px;
+  margin: 0 3px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s;
+}
+
+.modeOption:hover {
+  color: white;
+}
+
+.modeOptionSelected {
+  color: #ffcc33;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.gameTitle {
+  font-size: 18px;
+  margin: 0;
+  text-shadow: 2px 2px 0 #000;
+  color: #ffcc33;
+  white-space: nowrap;
+  font-family: 'Press Start 2P', monospace, Arial;
+}
+
+.turnsDisplay {
+  color: white;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 12px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.resetButton {
+  padding: 3px 10px;
+  background-color: #ffcc33;
+  color: #000;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 2px solid #996600;
+  transition: all 0.2s;
+}
+
+.resetButton:hover {
+  background-color: #ffdd44;
+}
+
+@media (max-width: 600px) {
+  .headerContainer {
+    flex-direction: column;
+    width: 330px;
+  }
+  
+  .gameTitle {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    position: static;
+    transform: none;
+    margin-bottom: 12px;
+  }
+  
+  .controlsRow {
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 5px;
+  }
+  
+  .modeSwitch {
+    gap: 10px;
+  }
+  
+  .rightControls {
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .resetButton {
+    padding: 3px 8px;
+    font-size: 10px;
+    white-space: nowrap;
+    margin-right: 5px;
+  }
+  
+  .turnsDisplay {
+    font-size: 10px;
+    padding: 3px 5px;
+  }
+  
+  .modeOption {
+    font-size: 11px;
+    margin: 0 3px;
+  }
+}

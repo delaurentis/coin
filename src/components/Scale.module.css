@@ -1,0 +1,188 @@
+.scaleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.scale {
+  position: relative;
+  width: 600px;
+  height: 350px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fulcrum {
+  width: 40px;
+  height: 40px;
+  background-color: #555;
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.beam {
+  position: absolute;
+  top: 10px;
+  width: 500px;
+  height: 10px;
+  background-color: #8b4513;
+  border-top: 2px solid #a0522d;
+  border-bottom: 2px solid #654321;
+  z-index: 2;
+}
+
+.plate {
+  width: 180px;
+  height: 20px;
+  background-color: #a0522d;
+  border: 2px solid #654321;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 3;
+}
+
+.plateInner {
+  width: 130px;
+  height: 12px;
+  background-color: #c68c53;
+  border: 1px solid #8b4513;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leftPlate {
+  margin-left: 30px;
+}
+
+.rightPlate {
+  margin-right: 30px;
+}
+
+.selected {
+  border: 2px solid #ffec80;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.plate::before {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 100px;
+  background-color: #654321;
+  top: -100px;
+  z-index: -1;
+}
+
+.leftPlate::before {
+  left: 30px;
+}
+
+.rightPlate::before {
+  right: 30px;
+}
+
+.emptyPlate {
+  width: 100%;
+  height: 100%;
+}
+
+/* Pyramid Styles */
+.leftPyramid, .rightPyramid {
+  position: absolute;
+  bottom: 20px; /* Position above the plate */
+  display: flex;
+  flex-direction: column-reverse; /* Stack from bottom up */
+  align-items: center;
+  width: 140px;
+  z-index: 10;
+}
+
+.leftPyramid {
+  left: 30px;
+}
+
+.rightPyramid {
+  right: 30px;
+}
+
+.pyramidRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -50px; /* Overlap the coins vertically */
+  position: relative;
+  z-index: 10;
+}
+
+.pyramidCoin {
+  width: 80px;
+  height: 80px;
+  margin: 0 -20px; /* Overlap horizontally */
+  transform-origin: bottom center;
+  position: relative;
+  z-index: 5;
+}
+
+.pyramidCoin:nth-child(odd) {
+  z-index: 6; /* Ensure coins interleave properly */
+}
+
+.tippedLeft {
+  transform: rotate(-10deg);
+}
+
+.tippedRight {
+  transform: rotate(10deg);
+}
+
+.weighButton {
+  margin-top: 20px;
+  padding: 8px 20px;
+  background-color: #ffcc33;
+  color: #000;
+  border: 3px solid #996600;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #996600;
+  position: relative;
+  top: 0;
+  transition: top 0.1s, box-shadow 0.1s;
+  outline: none;
+}
+
+.weighButton:hover:not(:disabled) {
+  background-color: #ffdd44;
+}
+
+.weighButton:active:not(:disabled) {
+  top: 4px;
+  box-shadow: 0 0 0 #996600;
+}
+
+.weighButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

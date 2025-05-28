@@ -1,0 +1,142 @@
+.balanceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.balanceGraphic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+  position: relative;
+  height: 430px;
+  background: purple;
+  margin-bottom: 20px;
+}
+
+.balance {
+  position: absolute;
+  width: 1000px;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transform-origin: center 210px;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  z-index: 1;
+}
+
+/* Fulcrum styles moved to Fulcrum.module.css */
+
+.balanceArm {
+  position: relative;
+  width: 750px; /* 50% wider than original 500px */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 260px;
+}
+
+.balanceArmImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  z-index: 5;
+}
+
+/* Clickable sides */
+.leftSide, .rightSide {
+  position: absolute;
+  width: 300px;
+  height: 100%; /* Cover entire height of the balance arm */
+  top: 0;
+  bottom: 0;
+  z-index: 15;
+  cursor: pointer;
+  pointer-events: auto; /* Ensure this works with event propagation */
+}
+
+/* Ensure coins have higher priority for pointer events */
+.leftSide *, .rightSide * {
+  pointer-events: none; /* Allow events to pass through to coins */
+}
+
+.leftSide {
+  left: 75px;
+}
+
+.rightSide {
+  right: 75px;
+}
+
+/* Arrow moved to BalanceSide component */
+
+/* Button styles moved to BalanceFooter.module.css */
+
+
+.tippedLeft {
+  transform: rotate(-10deg);
+}
+
+.tippedRight {
+  transform: rotate(10deg);
+}
+
+.wobble {
+  animation: wobbleAnimation 1.5s ease-in-out;
+  transition: none;
+}
+
+.wobbleLeft {
+  animation: wobbleLeftAnimation 1s ease-in-out;
+  transition: none;
+}
+
+.wobbleRight {
+  animation: wobbleRightAnimation 1s ease-in-out;
+  transition: none;
+}
+
+@keyframes wobbleAnimation {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-5deg); }
+  40% { transform: rotate(5deg); }
+  60% { transform: rotate(-3deg); }
+  80% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes wobbleLeftAnimation {
+  0% { transform: rotate(-10deg); }
+  25% { transform: rotate(-14deg); }
+  50% { transform: rotate(-8deg); }
+  75% { transform: rotate(-12deg); }
+  100% { transform: rotate(-10deg); }
+}
+
+@keyframes wobbleRightAnimation {
+  0% { transform: rotate(10deg); }
+  25% { transform: rotate(14deg); }
+  50% { transform: rotate(8deg); }
+  75% { transform: rotate(12deg); }
+  100% { transform: rotate(10deg); }
+}
+
+/* Weigh button styles moved to BalanceFooter.module.css */
+
+@media (max-width: 768px) {
+  .balanceContainer {
+    width: 360px;
+    margin-top: 0px;
+    margin-bottom: -10px;
+  }
+  .balanceGraphic {
+    transform: scale(0.5) translateY(-260px);
+    margin-bottom: 0;
+  }
+}
+  

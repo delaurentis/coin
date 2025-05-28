@@ -1,0 +1,131 @@
+.footerContainer {
+  width: 650px; /* Match balance arm width */
+  margin-top: 10px;
+  z-index: 40;
+}
+
+.desktopLayout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.mobileLayout {
+  display: none;
+}
+
+.mobileSelectionRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Selection buttons */
+.selectionButton {
+  padding: 8px 15px;
+  background-color: black;
+  color: white;
+  border: 3px solid white;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #444444;
+  border-radius: 0px;
+  position: relative;
+  top: 0;
+  transition: all 0.1s;
+  outline: none;
+  width: 200px;
+}
+
+.selectionButton:hover:not(.selected) {
+  background-color: #555555;
+}
+
+.selectionButton:active:not(.selected) {
+  top: 4px;
+  box-shadow: 0 0 0 #2a70c2;
+}
+
+.selectionButton.selected {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 4px 0 #444444;
+  color: #000;
+}
+
+.leftButton {
+  margin-right: 20px;
+}
+
+.rightButton {
+  margin-left: 20px;
+}
+
+/* Weigh button */
+.weighButton {
+  padding: 8px 15px;
+  background-color: #ffcc33;
+  color: #000;
+  border: 3px solid #ffcc33;
+  font-family: 'Press Start 2P', monospace, Arial;
+  font-size: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #996600;
+  position: relative;
+  transition: all 0.1s;
+  outline: none;
+  z-index: 40;
+  border-radius: 0px;
+  width: 150px;
+}
+
+.weighButton:hover:not(:disabled) {
+  background-color: #ffefa5;
+}
+
+.weighButton:active:not(:disabled) {
+  top: 4px;
+  box-shadow: 0 0 0 #996600;
+}
+
+.weighButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .footerContainer {
+    width: 300px;
+    margin-top: -210px;
+  }
+
+  .desktopLayout {
+    display: none;
+  }
+
+  .mobileLayout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .mobileWeighButton {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .selectionButton {
+    flex: 1;
+    margin: 0;
+    font-size: 10px;
+    padding: 8px 5px;
+  }
+  
+  .weighButton {
+    width: 100%;
+  }
+}
