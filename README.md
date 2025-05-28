@@ -50,10 +50,9 @@ Coinspiracy is built with:
 - CSS Modules for component-specific styling
 - Local Storage API for game state persistence
 
-The game implements complex algorithms to:
+The game implements algorithms to:
 - Track potential weighted coins based on weighing history
 - Implement the worst-case strategy for maximum challenge
-- Provide visual feedback through animations and color coding
 
 ## Installation and Running
 
