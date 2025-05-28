@@ -4,7 +4,7 @@ Coinspiracy is an interactive web-based implementation of the classic coin weigh
 
 ## Demo
 
-Visit https://coinspiracy.retrorabbit.games/ for a live demo.
+Visit https://coin.retrorabbit.games/ for a live demo.
 
 ## Game Concept
 
