@@ -2,7 +2,6 @@ import { WeighResult } from '../types';
 
 /**
  * Determines which coins could potentially be weighted based on weighing history
- * Uses a system of linear equations approach to identify coins that must have normal weight
  * @param weighHistory Array of weighing results
  * @param totalCoins Total number of coins in the game
  * @returns Array of indices representing coins that could potentially be weighted

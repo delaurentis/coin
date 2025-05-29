@@ -1,5 +1,5 @@
 import { WeighResult } from '../types';
-import { getPotentialWeightedCoins } from './coinEquationSolver';
+import { getPotentialWeightedCoins } from './coinEliminator';
 
 /**
  * Determines the optimal weighing result in "worst case" mode
@@ -56,7 +56,7 @@ export function determineOptimalWeighResult(
       { leftCoins, rightCoins, result }
     ];
     
-    // Use coinEquationSolver to determine remaining potential weighted coins
+    // Determine remaining potential weighted coins
     const remainingCoins = getPotentialWeightedCoins(simulatedHistory, totalCoins);
     return remainingCoins.length;
   };

@@ -5,7 +5,7 @@ import Header from './components/Header';
 import Message from './components/Message';
 import CoinContainer from './components/CoinContainer';
 import GameLog from './components/GameLog';
-import { getPotentialWeightedCoins } from './utils/coinEquationSolver';
+import { getPotentialWeightedCoins } from './utils/coinEliminator';
 import { determineOptimalWeighResult } from './utils/worstCaseStrategy';
 import { WeighResult } from './types';
 
