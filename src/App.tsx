@@ -8,7 +8,7 @@ import GameLog from './components/GameLog';
 import Settings from './components/Settings';
 import { getPotentialWeightedCoins } from './utils/coinEliminator';
 import { determineOptimalWeighResult } from './utils/worstCaseStrategy';
-import { WeighResult, WeightMode } from './types';
+import { WeighResult, WeightMode, CoinCandidate } from './types';
 import { getCoinValueFromWeightMode } from './utils/coinValue';
 
 type GameMode = 'random' | 'worst';
@@ -37,7 +37,7 @@ function App() {
         : 'heavy';
     }
   );
-  const [possibleWeightedCoins, setPossibleWeightedCoins] = useState<number[]>([]);
+  const [possibleWeightedCoins, setPossibleWeightedCoins] = useState<CoinCandidate[]>([]);
   const [weighHistory, setWeighHistory] = useState<WeighResult[]>([]);
   
   // Scale-related states
@@ -92,15 +92,18 @@ function App() {
             
             // If we're down to one coin in worst mode, set it as the weighted coin
             if (savedGameMode === 'worst' && lastWeigh.remainingCandidates.length === 1) {
-              setWeightedCoinIndex(lastWeigh.remainingCandidates[0]);
+              const candidate = lastWeigh.remainingCandidates[0];
+              setWeightedCoinIndex(candidate.index);
+              setWeightedCoinValue(candidate.value);
             }
             
             // For random mode, select a weighted coin from the remaining candidates
             if (savedGameMode === 'random') {
               const candidates = lastWeigh.remainingCandidates;
-              const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
-              setWeightedCoinIndex(randomIndex);
-              console.log("Restored weighted coin is:", randomIndex + 1);
+              const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+              setWeightedCoinIndex(randomCandidate.index);
+              setWeightedCoinValue(randomCandidate.value);
+              console.log("Restored weighted coin is:", randomCandidate.index + 1);
             }
           }
           
@@ -279,7 +282,8 @@ function App() {
         leftCoins,
         rightCoins,
         weightMode,
-        possibleWeightedCoins.length === 0 ? Array.from({ length: coins.length }, (_, i) => i) : possibleWeightedCoins,
+        possibleWeightedCoins.length === 0 ? 
+          getPotentialWeightedCoins([], coins.length, weightMode) : possibleWeightedCoins,
         weighHistory,
         coins.length
       );
@@ -306,7 +310,7 @@ function App() {
     
     // Calculate remaining potential weighted coins based on this result
     // This is useful for both game modes for hint mode
-    let remainingCandidates: number[];
+    let remainingCandidates: CoinCandidate[];
     
     // Special cases
     if (possibleWeightedCoins.length === 1) {
@@ -318,7 +322,7 @@ function App() {
         ...weighHistory,
         { leftCoins: [...leftCoins], rightCoins: [...rightCoins], result }
       ];
-      remainingCandidates = getPotentialWeightedCoins(simulatedHistory, coins.length);
+      remainingCandidates = getPotentialWeightedCoins(simulatedHistory, coins.length, weightMode);
       
       // Protection: Make sure we don't eliminate all coins
       if (remainingCandidates.length === 0) {
@@ -350,7 +354,9 @@ function App() {
     
     // If we're down to just one possible coin in worst mode, set it as the weighted coin
     if (remainingCandidates.length === 1 && gameMode === 'worst') {
-      setWeightedCoinIndex(remainingCandidates[0]);
+      const candidate = remainingCandidates[0];
+      setWeightedCoinIndex(candidate.index);
+      setWeightedCoinValue(candidate.value);
     }
   };
 
@@ -367,19 +373,19 @@ function App() {
     // Clear weigh history from localStorage
     localStorage.removeItem('coinGameHistory');
     
-    // Initialize all coins as potential weighted coins for both modes
-    // This is used for hint mode
-    setPossibleWeightedCoins(Array.from({ length: coins.length }, (_, i) => i));
+    // Initialize all coins as potential weighted coins based on weight mode
+    setPossibleWeightedCoins(getPotentialWeightedCoins([], coins.length, weightMode));
     
     // Always select left side on reset
     setSelectedSide('left');
     
     if (newMode === 'random') {
       // In random mode, pick a weighted coin right away
-      const randomIndex = Math.floor(Math.random() * 12);
-      setWeightedCoinIndex(randomIndex);
-      setWeightedCoinValue(getCoinValueFromWeightMode(weightMode));
-      console.log("New weighted coin is:", randomIndex + 1);
+      const candidates = getPotentialWeightedCoins([], coins.length, weightMode);
+      const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+      setWeightedCoinIndex(randomCandidate.index);
+      setWeightedCoinValue(randomCandidate.value);
+      console.log("New weighted coin is:", randomCandidate.index + 1);
       setMessage("Click coins to add to the left side.");
     } else {
       // In worst mode, don't pick a weighted coin yet
@@ -428,17 +434,17 @@ function App() {
     // Use the cached remainingCandidates from the last weighing if available
     const lastWeighing = weighHistory[weighHistory.length - 1];
     if (lastWeighing && lastWeighing.remainingCandidates) {
-      return lastWeighing.remainingCandidates.includes(index);
+      return lastWeighing.remainingCandidates.some(candidate => candidate.index === index);
     }
     
     // Fallback to possibleWeightedCoins if we have them
     if (possibleWeightedCoins.length > 0) {
-      return possibleWeightedCoins.includes(index);
+      return possibleWeightedCoins.some(candidate => candidate.index === index);
     }
     
     // Last resort: recalculate (shouldn't be needed)
-    const potentialWeighted = getPotentialWeightedCoins(weighHistory, coins.length);
-    return potentialWeighted.includes(index);
+    const potentialWeighted = getPotentialWeightedCoins(weighHistory, coins.length, weightMode);
+    return potentialWeighted.some(candidate => candidate.index === index);
   };
 
   // Function to handle the user's guess

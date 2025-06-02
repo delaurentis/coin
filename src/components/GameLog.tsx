@@ -33,7 +33,7 @@ const GameLog: React.FC<GameLogProps> = ({ weighHistory, isVisible }) => {
               </div>
               {result.remainingCandidates && result.remainingCandidates.length > 0 && (
                 <div className={styles.candidates}>
-                  Possible weighted coins: {result.remainingCandidates.map(coin => coin + 1).join(', ')}
+                  Possible weighted coins: {result.remainingCandidates.map(coin => coin.index + 1).join(', ')}
                 </div>
               )}
             </div>
