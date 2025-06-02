@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Message from './components/Message';
 import CoinContainer from './components/CoinContainer';
 import GameLog from './components/GameLog';
+import Settings from './components/Settings';
 import { getPotentialWeightedCoins } from './utils/coinEliminator';
 import { determineOptimalWeighResult } from './utils/worstCaseStrategy';
 import { WeighResult } from './types';
@@ -13,6 +14,7 @@ import { WeighResult } from './types';
 const WEIGHT_VALUE = 1;
 
 type GameMode = 'random' | 'worst';
+type WeightMode = 'heavy' | 'light' | 'either';
 
 function App() {
   const [coins, setCoins] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
@@ -27,6 +29,16 @@ function App() {
       return (savedMode === 'random' || savedMode === 'worst') ? savedMode : 'random';
     }
   );
+  const [weightMode, setWeightMode] = useState<WeightMode>(
+    () => {
+      // Try to load saved weight mode from localStorage
+      const savedWeightMode = localStorage.getItem('coinGameWeightMode') as WeightMode;
+      // Return the saved mode if it's valid, otherwise default to 'heavy'
+      return (savedWeightMode === 'heavy' || savedWeightMode === 'light' || savedWeightMode === 'either') 
+        ? savedWeightMode 
+        : 'heavy';
+    }
+  );
   const [possibleWeightedCoins, setPossibleWeightedCoins] = useState<number[]>([]);
   const [weighHistory, setWeighHistory] = useState<WeighResult[]>([]);
   
@@ -37,6 +49,9 @@ function App() {
   const [scaleTipped, setScaleTipped] = useState<'left' | 'right' | null>(null);
   const [isWeighing, setIsWeighing] = useState<boolean>(false);
   const [turns, setTurns] = useState<number>(0);
+  
+  // Settings panel state
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   
   // Game log state
   const [isLogVisible, setIsLogVisible] = useState<boolean>(
@@ -363,7 +378,7 @@ function App() {
     } else {
       // In worst mode, don't pick a weighted coin yet
       setWeightedCoinIndex(null);
-      setMessage("Worst Case mode. Adding coins to left side.");
+      setMessage("Worst case mode. Adding coins to left side.");
     }
   };
 
@@ -432,8 +447,7 @@ function App() {
   return (
     <div className="App">
         <Header 
-          gameMode={gameMode}
-          setGameMode={handleGameModeChange}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           turns={turns}
           resetGame={() => resetGame(gameMode)}
         />
@@ -475,6 +489,19 @@ function App() {
           <div>Press 'L' to {isLogVisible ? 'hide' : 'show'} game log</div>
           <div>Press 'H' to {isHintModeActive ? 'disable' : 'enable'} hint mode</div>
         </div>
+
+        {isSettingsOpen && <Settings 
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          gameMode={gameMode} 
+          setGameMode={handleGameModeChange}
+          isHintModeActive={isHintModeActive}
+          setIsHintModeActive={setIsHintModeActive}
+          isLogVisible={isLogVisible}
+          setIsLogVisible={setIsLogVisible}
+          weightMode={weightMode}
+          setWeightMode={setWeightMode}
+        />}
     </div>
   );
 }
