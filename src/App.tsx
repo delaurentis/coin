@@ -8,17 +8,15 @@ import GameLog from './components/GameLog';
 import Settings from './components/Settings';
 import { getPotentialWeightedCoins } from './utils/coinEliminator';
 import { determineOptimalWeighResult } from './utils/worstCaseStrategy';
-import { WeighResult } from './types';
-
-// Weight constant - how much heavier the weighted coin is
-const WEIGHT_VALUE = 1;
+import { WeighResult, WeightMode } from './types';
+import { getCoinValueFromWeightMode } from './utils/coinValue';
 
 type GameMode = 'random' | 'worst';
-type WeightMode = 'heavy' | 'light' | 'either';
 
 function App() {
   const [coins, setCoins] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
   const [weightedCoinIndex, setWeightedCoinIndex] = useState<number | null>(null);
+  const [weightedCoinValue, setWeightedCoinValue] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState("Click on coins to add them to the scale!");
   const [gameMode, setGameMode] = useState<GameMode>(
@@ -240,14 +238,20 @@ function App() {
         const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
         setWeightedCoinIndex(randomIndex);                                                           
         console.log("New weighted coin is:", randomIndex + 1);                                       
-      }*/                                                                                         
+      }*/                                             
+     
+      // Make sure we have a weighted coin value
+      if (weightedCoinValue === null) {
+        console.error("No weighted coin value detected in random mode. Selecting a new one...");
+        return;
+      }
 
       // Random mode - use the pre-selected weighted coin
       // Calculate weight of each side
       const leftWeight = leftCoins.includes(weightedCoinIndex!) ? 
-                         leftCoins.length + WEIGHT_VALUE : leftCoins.length;
+                         leftCoins.length - 1 + weightedCoinValue! : leftCoins.length;
       const rightWeight = rightCoins.includes(weightedCoinIndex!) ? 
-                          rightCoins.length + WEIGHT_VALUE : rightCoins.length;
+                          rightCoins.length - 1 + weightedCoinValue! : rightCoins.length;
 
       if (leftWeight > rightWeight) {
         setScaleTipped('left');
@@ -274,6 +278,7 @@ function App() {
       result = determineOptimalWeighResult(
         leftCoins,
         rightCoins,
+        weightMode,
         possibleWeightedCoins.length === 0 ? Array.from({ length: coins.length }, (_, i) => i) : possibleWeightedCoins,
         weighHistory,
         coins.length
@@ -373,11 +378,13 @@ function App() {
       // In random mode, pick a weighted coin right away
       const randomIndex = Math.floor(Math.random() * 12);
       setWeightedCoinIndex(randomIndex);
+      setWeightedCoinValue(getCoinValueFromWeightMode(weightMode));
       console.log("New weighted coin is:", randomIndex + 1);
       setMessage("Click coins to add to the left side.");
     } else {
       // In worst mode, don't pick a weighted coin yet
       setWeightedCoinIndex(null);
+      setWeightedCoinValue(null);
       setMessage("Worst case mode. Adding coins to left side.");
     }
   };

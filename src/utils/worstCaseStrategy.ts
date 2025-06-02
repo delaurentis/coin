@@ -1,4 +1,4 @@
-import { WeighResult } from '../types';
+import { WeighResult, WeightMode } from '../types';
 import { getPotentialWeightedCoins } from './coinEliminator';
 
 /**
@@ -15,6 +15,7 @@ import { getPotentialWeightedCoins } from './coinEliminator';
 export function determineOptimalWeighResult(
   leftCoins: number[],
   rightCoins: number[],
+  weightMode: WeightMode,
   possibleWeightedCoins: number[],
   weighHistory: WeighResult[],
   totalCoins: number

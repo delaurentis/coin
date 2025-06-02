@@ -4,3 +4,6 @@ export interface WeighResult {
   result: 'left' | 'right' | 'equal';
   remainingCandidates?: number[]; // Possible weighted coins after this weighing
 }
+
+export type WeightMode = 'heavy' | 'light' | 'either';
+
