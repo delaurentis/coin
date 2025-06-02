@@ -159,6 +159,15 @@ function App() {
     setGameMode(mode);
     resetGame(mode);
   };
+  
+  // Function to handle weight mode changes
+  const handleWeightModeChange = (mode: WeightMode) => {
+    // Save to localStorage
+    localStorage.setItem('coinGameWeightMode', mode);
+    // Update state
+    setWeightMode(mode);
+    resetGame(gameMode);
+  };
 
   const handleCoinClick = (index: number) => {
     if (gameOver) return;
@@ -513,7 +522,7 @@ function App() {
           isLogVisible={isLogVisible}
           setIsLogVisible={setIsLogVisible}
           weightMode={weightMode}
-          setWeightMode={setWeightMode}
+          setWeightMode={handleWeightModeChange}
         />}
     </div>
   );

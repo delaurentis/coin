@@ -45,7 +45,6 @@ const Settings: React.FC<SettingsProps> = ({
   
   const handleWeightModeChange = (mode: 'heavy' | 'light' | 'either') => {
     setWeightMode(mode);
-    localStorage.setItem('coinGameWeightMode', mode);
   };
   
   // Close when clicking overlay

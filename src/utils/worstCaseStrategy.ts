@@ -85,7 +85,22 @@ export function determineOptimalWeighResult(
   // Find the result that leaves the most possible weighted coins
   const max = Math.max(remainingIfLeft, remainingIfRight, remainingIfEqual);
   
-  // If multiple options have the same number of remaining coins, prioritize in this order: equal, left, right
+  // Check if all options have the same number of remaining candidates
+  const allEqual = remainingIfLeft === remainingIfRight && remainingIfRight === remainingIfEqual && max > 0;
+  
+  if (allEqual) {
+    // If all options are equally good, choose randomly
+    const randomChoice = Math.random();
+    if (randomChoice < 0.33) {
+      return 'left';
+    } else if (randomChoice < 0.66) {
+      return 'right';
+    } else {
+      return 'equal';
+    }
+  }
+  
+  // Otherwise, if not all equal, prioritize in this order: equal, left, right
   // But ensure we respect physics - equal is only possible in certain situations
   
   // We already handled the all-coins-on-scale case at the top of the function
