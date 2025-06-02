@@ -5,18 +5,18 @@ import Header from './components/Header';
 import Message from './components/Message';
 import CoinContainer from './components/CoinContainer';
 import GameLog from './components/GameLog';
+import Settings from './components/Settings';
 import { getPotentialWeightedCoins } from './utils/coinEliminator';
 import { determineOptimalWeighResult } from './utils/worstCaseStrategy';
-import { WeighResult } from './types';
-
-// Weight constant - how much heavier the weighted coin is
-const WEIGHT_VALUE = 1;
+import { WeighResult, WeightMode, CoinCandidate } from './types';
+import { getCoinValueFromWeightMode } from './utils/coinValue';
 
 type GameMode = 'random' | 'worst';
 
 function App() {
   const [coins, setCoins] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
   const [weightedCoinIndex, setWeightedCoinIndex] = useState<number | null>(null);
+  const [weightedCoinValue, setWeightedCoinValue] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState("Click on coins to add them to the scale!");
   const [gameMode, setGameMode] = useState<GameMode>(
@@ -27,7 +27,17 @@ function App() {
       return (savedMode === 'random' || savedMode === 'worst') ? savedMode : 'random';
     }
   );
-  const [possibleWeightedCoins, setPossibleWeightedCoins] = useState<number[]>([]);
+  const [weightMode, setWeightMode] = useState<WeightMode>(
+    () => {
+      // Try to load saved weight mode from localStorage
+      const savedWeightMode = localStorage.getItem('coinGameWeightMode') as WeightMode;
+      // Return the saved mode if it's valid, otherwise default to 'heavy'
+      return (savedWeightMode === 'heavy' || savedWeightMode === 'light' || savedWeightMode === 'either') 
+        ? savedWeightMode 
+        : 'heavy';
+    }
+  );
+  const [possibleWeightedCoins, setPossibleWeightedCoins] = useState<CoinCandidate[]>([]);
   const [weighHistory, setWeighHistory] = useState<WeighResult[]>([]);
   
   // Scale-related states
@@ -37,6 +47,9 @@ function App() {
   const [scaleTipped, setScaleTipped] = useState<'left' | 'right' | null>(null);
   const [isWeighing, setIsWeighing] = useState<boolean>(false);
   const [turns, setTurns] = useState<number>(0);
+  
+  // Settings panel state
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   
   // Game log state
   const [isLogVisible, setIsLogVisible] = useState<boolean>(
@@ -79,15 +92,18 @@ function App() {
             
             // If we're down to one coin in worst mode, set it as the weighted coin
             if (savedGameMode === 'worst' && lastWeigh.remainingCandidates.length === 1) {
-              setWeightedCoinIndex(lastWeigh.remainingCandidates[0]);
+              const candidate = lastWeigh.remainingCandidates[0];
+              setWeightedCoinIndex(candidate.index);
+              setWeightedCoinValue(candidate.value);
             }
             
             // For random mode, select a weighted coin from the remaining candidates
             if (savedGameMode === 'random') {
               const candidates = lastWeigh.remainingCandidates;
-              const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
-              setWeightedCoinIndex(randomIndex);
-              console.log("Restored weighted coin is:", randomIndex + 1);
+              const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+              setWeightedCoinIndex(randomCandidate.index);
+              setWeightedCoinValue(randomCandidate.value);
+              console.log("Restored weighted coin is:", randomCandidate.index + 1);
             }
           }
           
@@ -142,6 +158,15 @@ function App() {
     // Update state
     setGameMode(mode);
     resetGame(mode);
+  };
+  
+  // Function to handle weight mode changes
+  const handleWeightModeChange = (mode: WeightMode) => {
+    // Save to localStorage
+    localStorage.setItem('coinGameWeightMode', mode);
+    // Update state
+    setWeightMode(mode);
+    resetGame(gameMode);
   };
 
   const handleCoinClick = (index: number) => {
@@ -225,14 +250,20 @@ function App() {
         const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
         setWeightedCoinIndex(randomIndex);                                                           
         console.log("New weighted coin is:", randomIndex + 1);                                       
-      }*/                                                                                         
+      }*/                                             
+     
+      // Make sure we have a weighted coin value
+      if (weightedCoinValue === null) {
+        console.error("No weighted coin value detected in random mode. Selecting a new one...");
+        return;
+      }
 
       // Random mode - use the pre-selected weighted coin
       // Calculate weight of each side
       const leftWeight = leftCoins.includes(weightedCoinIndex!) ? 
-                         leftCoins.length + WEIGHT_VALUE : leftCoins.length;
+                         leftCoins.length - 1 + weightedCoinValue! : leftCoins.length;
       const rightWeight = rightCoins.includes(weightedCoinIndex!) ? 
-                          rightCoins.length + WEIGHT_VALUE : rightCoins.length;
+                          rightCoins.length - 1 + weightedCoinValue! : rightCoins.length;
 
       if (leftWeight > rightWeight) {
         setScaleTipped('left');
@@ -259,7 +290,9 @@ function App() {
       result = determineOptimalWeighResult(
         leftCoins,
         rightCoins,
-        possibleWeightedCoins.length === 0 ? Array.from({ length: coins.length }, (_, i) => i) : possibleWeightedCoins,
+        weightMode,
+        possibleWeightedCoins.length === 0 ? 
+          getPotentialWeightedCoins([], coins.length, weightMode) : possibleWeightedCoins,
         weighHistory,
         coins.length
       );
@@ -286,7 +319,7 @@ function App() {
     
     // Calculate remaining potential weighted coins based on this result
     // This is useful for both game modes for hint mode
-    let remainingCandidates: number[];
+    let remainingCandidates: CoinCandidate[];
     
     // Special cases
     if (possibleWeightedCoins.length === 1) {
@@ -298,7 +331,7 @@ function App() {
         ...weighHistory,
         { leftCoins: [...leftCoins], rightCoins: [...rightCoins], result }
       ];
-      remainingCandidates = getPotentialWeightedCoins(simulatedHistory, coins.length);
+      remainingCandidates = getPotentialWeightedCoins(simulatedHistory, coins.length, weightMode);
       
       // Protection: Make sure we don't eliminate all coins
       if (remainingCandidates.length === 0) {
@@ -330,7 +363,9 @@ function App() {
     
     // If we're down to just one possible coin in worst mode, set it as the weighted coin
     if (remainingCandidates.length === 1 && gameMode === 'worst') {
-      setWeightedCoinIndex(remainingCandidates[0]);
+      const candidate = remainingCandidates[0];
+      setWeightedCoinIndex(candidate.index);
+      setWeightedCoinValue(candidate.value);
     }
   };
 
@@ -347,23 +382,25 @@ function App() {
     // Clear weigh history from localStorage
     localStorage.removeItem('coinGameHistory');
     
-    // Initialize all coins as potential weighted coins for both modes
-    // This is used for hint mode
-    setPossibleWeightedCoins(Array.from({ length: coins.length }, (_, i) => i));
+    // Initialize all coins as potential weighted coins based on weight mode
+    setPossibleWeightedCoins(getPotentialWeightedCoins([], coins.length, weightMode));
     
     // Always select left side on reset
     setSelectedSide('left');
     
     if (newMode === 'random') {
       // In random mode, pick a weighted coin right away
-      const randomIndex = Math.floor(Math.random() * 12);
-      setWeightedCoinIndex(randomIndex);
-      console.log("New weighted coin is:", randomIndex + 1);
+      const candidates = getPotentialWeightedCoins([], coins.length, weightMode);
+      const randomCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+      setWeightedCoinIndex(randomCandidate.index);
+      setWeightedCoinValue(randomCandidate.value);
+      console.log("New weighted coin is:", randomCandidate.index + 1);
       setMessage("Click coins to add to the left side.");
     } else {
       // In worst mode, don't pick a weighted coin yet
       setWeightedCoinIndex(null);
-      setMessage("Worst Case mode. Adding coins to left side.");
+      setWeightedCoinValue(null);
+      setMessage("Worst case mode. Adding coins to left side.");
     }
   };
 
@@ -406,17 +443,17 @@ function App() {
     // Use the cached remainingCandidates from the last weighing if available
     const lastWeighing = weighHistory[weighHistory.length - 1];
     if (lastWeighing && lastWeighing.remainingCandidates) {
-      return lastWeighing.remainingCandidates.includes(index);
+      return lastWeighing.remainingCandidates.some(candidate => candidate.index === index);
     }
     
     // Fallback to possibleWeightedCoins if we have them
     if (possibleWeightedCoins.length > 0) {
-      return possibleWeightedCoins.includes(index);
+      return possibleWeightedCoins.some(candidate => candidate.index === index);
     }
     
     // Last resort: recalculate (shouldn't be needed)
-    const potentialWeighted = getPotentialWeightedCoins(weighHistory, coins.length);
-    return potentialWeighted.includes(index);
+    const potentialWeighted = getPotentialWeightedCoins(weighHistory, coins.length, weightMode);
+    return potentialWeighted.some(candidate => candidate.index === index);
   };
 
   // Function to handle the user's guess
@@ -432,8 +469,7 @@ function App() {
   return (
     <div className="App">
         <Header 
-          gameMode={gameMode}
-          setGameMode={handleGameModeChange}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           turns={turns}
           resetGame={() => resetGame(gameMode)}
         />
@@ -475,6 +511,19 @@ function App() {
           <div>Press 'L' to {isLogVisible ? 'hide' : 'show'} game log</div>
           <div>Press 'H' to {isHintModeActive ? 'disable' : 'enable'} hint mode</div>
         </div>
+
+        {isSettingsOpen && <Settings 
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          gameMode={gameMode} 
+          setGameMode={handleGameModeChange}
+          isHintModeActive={isHintModeActive}
+          setIsHintModeActive={setIsHintModeActive}
+          isLogVisible={isLogVisible}
+          setIsLogVisible={setIsLogVisible}
+          weightMode={weightMode}
+          setWeightMode={handleWeightModeChange}
+        />}
     </div>
   );
 }

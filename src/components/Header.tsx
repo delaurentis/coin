@@ -2,17 +2,15 @@ import React from 'react';
 import styles from './Header.module.css';
 
 interface HeaderProps {
-  gameMode: 'random' | 'worst';
-  setGameMode: (mode: 'random' | 'worst') => void;
   turns: number;
   resetGame: () => void;
+  onOpenSettings: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-  gameMode, 
-  setGameMode, 
   turns, 
-  resetGame 
+  resetGame,
+  onOpenSettings
 }) => {
   return (
     <div className={styles.gameHeader}>
@@ -21,20 +19,12 @@ const Header: React.FC<HeaderProps> = ({
         
         <div className={styles.controlsRow}>
           <div className={styles.modeSwitchContainer}>
-            <div className={styles.modeSwitch}>
-              <span 
-                className={`${styles.modeOption} ${gameMode === 'random' ? styles.modeOptionSelected : ''}`}
-                onClick={() => setGameMode('random')}
-              >
-                Random
-              </span>
-              <span 
-                className={`${styles.modeOption} ${gameMode === 'worst' ? styles.modeOptionSelected : ''}`}
-                onClick={() => setGameMode('worst')}
-              >
-                Worst
-              </span>
-            </div>
+            <button 
+              className={styles.settingsButton}
+              onClick={onOpenSettings}
+            >
+              Settings
+            </button>
           </div>
 
           <div className={styles.rightControls}>

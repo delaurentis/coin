@@ -43,31 +43,29 @@
   gap: 15px;
 }
 
-.modeSwitch {
-  display: flex;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin-top: -3px;
-  border-radius: 0px;
-  gap: 15px;
-}
-
-.modeOption {
-  padding: 3px 0px;
-  margin: 0 3px;
-  cursor: pointer;
+.settingsButton {
+  padding: 3px 10px;
+  background-color: #ffcc33;
+  color: #000;
   font-family: 'Press Start 2P', monospace, Arial;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  transition: all 0.2s;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 0;
+  border: 3px solid #ffcc33;
+  box-shadow: 0 4px 0 #996600;
+  position: relative;
+  top: 0;
+  transition: all 0.1s;
+  outline: none;
 }
 
-.modeOption:hover {
-  color: white;
+.settingsButton:hover {
+  background-color: #ffdd44;
 }
 
-.modeOptionSelected {
-  color: #ffcc33;
-  text-shadow: 1px 1px 0 #000;
+.settingsButton:active {
+  top: 4px;
+  box-shadow: 0 0 0 #996600;
 }
 
 .gameTitle {
@@ -94,13 +92,22 @@
   font-family: 'Press Start 2P', monospace, Arial;
   font-size: 11px;
   cursor: pointer;
-  border-radius: 4px;
-  border: 2px solid #996600;
-  transition: all 0.2s;
+  border-radius: 0;
+  border: 3px solid #ffcc33;
+  box-shadow: 0 4px 0 #996600;
+  position: relative;
+  top: 0;
+  transition: all 0.1s;
+  outline: none;
 }
 
 .resetButton:hover {
   background-color: #ffdd44;
+}
+
+.resetButton:active {
+  top: 4px;
+  box-shadow: 0 0 0 #996600;
 }
 
 @media (max-width: 600px) {

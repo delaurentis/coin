@@ -1,4 +1,4 @@
-import { WeighResult } from '../types';
+import { WeighResult, WeightMode, CoinCandidate } from '../types';
 import { getPotentialWeightedCoins } from './coinEliminator';
 
 /**
@@ -15,7 +15,8 @@ import { getPotentialWeightedCoins } from './coinEliminator';
 export function determineOptimalWeighResult(
   leftCoins: number[],
   rightCoins: number[],
-  possibleWeightedCoins: number[],
+  weightMode: WeightMode,
+  possibleWeightedCoins: CoinCandidate[],
   weighHistory: WeighResult[],
   totalCoins: number
 ): 'left' | 'right' | 'equal' {
@@ -28,12 +29,15 @@ export function determineOptimalWeighResult(
   }*/
   // When we've identified the weighted coin (only one possibility), act like random mode
   if (possibleWeightedCoins.length === 1) {
-    const WEIGHT_VALUE = 1;
-    const weightedCoinIndex = possibleWeightedCoins[0];
+    const candidate = possibleWeightedCoins[0];
+    const weightedCoinIndex = candidate.index;
+    const coinValue = candidate.value;
     
     // Calculate physical weights like in random mode
-    const leftWeight = leftCoins.length + (leftCoins.includes(weightedCoinIndex) ? WEIGHT_VALUE : 0);
-    const rightWeight = rightCoins.length + (rightCoins.includes(weightedCoinIndex) ? WEIGHT_VALUE : 0);
+    const leftWeight = leftCoins.includes(weightedCoinIndex) ? 
+                      leftCoins.length - 1 + coinValue : leftCoins.length;
+    const rightWeight = rightCoins.includes(weightedCoinIndex) ? 
+                      rightCoins.length - 1 + coinValue : rightCoins.length;
     
     // Return physically correct result
     if (leftWeight > rightWeight) {
@@ -57,7 +61,7 @@ export function determineOptimalWeighResult(
     ];
     
     // Determine remaining potential weighted coins
-    const remainingCoins = getPotentialWeightedCoins(simulatedHistory, totalCoins);
+    const remainingCoins = getPotentialWeightedCoins(simulatedHistory, totalCoins, weightMode);
     return remainingCoins.length;
   };
   
@@ -81,7 +85,22 @@ export function determineOptimalWeighResult(
   // Find the result that leaves the most possible weighted coins
   const max = Math.max(remainingIfLeft, remainingIfRight, remainingIfEqual);
   
-  // If multiple options have the same number of remaining coins, prioritize in this order: equal, left, right
+  // Check if all options have the same number of remaining candidates
+  const allEqual = remainingIfLeft === remainingIfRight && remainingIfRight === remainingIfEqual && max > 0;
+  
+  if (allEqual) {
+    // If all options are equally good, choose randomly
+    const randomChoice = Math.random();
+    if (randomChoice < 0.33) {
+      return 'left';
+    } else if (randomChoice < 0.66) {
+      return 'right';
+    } else {
+      return 'equal';
+    }
+  }
+  
+  // Otherwise, if not all equal, prioritize in this order: equal, left, right
   // But ensure we respect physics - equal is only possible in certain situations
   
   // We already handled the all-coins-on-scale case at the top of the function
